@@ -1,6 +1,6 @@
 - Reponame: **`gentoo-zh`**
 
-(The last generation time: 2021-06-11 14:54:17 CST)
+(The last generation time: 2021-06-11 15:07:31 CST)
 
 ### Packages
 
@@ -200,8 +200,6 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  media-video/avplayer                           | 9999                   |            | http://avplayer.avplayer.org                                                            | avplayer is a p2p video downloader and player
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- media-video/lightworks                         | 2021.2-r1              |            | http://www.lwks.com/                                                                    | Lightworks is the fastest, most accessible and focused NLE in the industry
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  media-video/tenvideo                           | 1.0.10                 |            | https://v.qq.com/download.html#linux                                                    | Tencent videos
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-dialup/mentohust                           | 9999                   |            | http://code.google.com/p/mentohust/                                                     | A Ruijie and Cernet supplicant on Linux and MacOS
@@ -328,10 +326,8 @@
  sys-libs/libixp                                | 9999                   |            | http://libs.suckless.org/                                                               | Standalone client/server 9P library
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  virtual/linux-sources                          | 3-r6                   |            |                                                                                         | Virtual for Linux kernel sources
-   sys-kernel/projectc-sources                  | 5.12.8-r1              | RD         | https://github.com/Frogging-Family/linux-tkg                                            | Full Project-C CPU Scheduler And MuQSS CPU Scheduler sources including the Gentoo patchset for the . kernel tree
-                                                | 5.12.9                 |            |                                                                                         |
-   sys-kernel/xanmod-hybrid                     | 5.12.8-r1              | RD         | https://xanmod.org/                                                                     | Xanmod and Xanmod-CaCule sources including the Gentoo patchset for the . kernel tree
-                                                | 5.12.9                 |            |                                                                                         |
+   sys-kernel/xanmod-cacule-hybrid              | 5.12.10                | RD         | https://xanmod.org/                                                                     | Xanmod-Cacule patchset for main kernel tree
+   sys-kernel/xanmod-hybrid                     | 5.12.10                | RD         | https://xanmod.org/                                                                     | Xanmod patchset for main kernel tree
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  www-servers/darkhttpd                          | 1.13                   |            | http://unix4lyfe.org/darkhttpd/                                                         | A small, static webserver
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
