@@ -1,6 +1,6 @@
 - Reponame: **`gentoo-zh`**
 
-(The last generation time: 2021-06-11 15:07:31 CST)
+(The last generation time: 2021-06-21 10:11:09 CST)
 
 ### Packages
 
@@ -16,11 +16,11 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-editors/typora                             | 0.9.98                 |            | https://typora.io                                                                       | Typora will give you a seamless experience as both a reader and a writer.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-editors/visual-studio-code-bin             | 1.56.2                 |            | https://code.visualstudio.com                                                           | Multiplatform Visual Studio Code from Microsoft
+ app-editors/visual-studio-code-bin             | 1.57.1                 |            | https://code.visualstudio.com                                                           | Multiplatform Visual Studio Code from Microsoft
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-emulation/winetricks-zh                    | 9999                   |            | http://winetricks.org                                                                   | winetricks fork for chinese to install QQ
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-i18n/dvp                                   | 1.2.1                  |            | http://kaufmann.no/roland/dvorak/index.html                                             | The kbd keymap for Programmer Dvorak.
+ app-i18n/dvp                                   | 1.2.1-r1               |            | http://kaufmann.no/roland/dvorak/index.html                                             | The kbd keymap for Programmer Dvorak.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-i18n/fcitx5-chinese-addons                 | 5.0.6-r1               |            | https://github.com/fcitx/fcitx5-chinese-addons                                          | Addons related to Chinese, including IME previous bundled inside fcitx4.
                                                 | 9999                   |            |                                                                                         |
@@ -48,7 +48,7 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-i18n/ibus-rime                             | 9999                   |            | http://code.google.com/p/rimeime/                                                       | Rime Input Method Engine for IBus Framework
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-i18n/libgooglepinyin                       | 0.1.2                  |            | http://libgooglepinyin.googlecode.com/                                                  | A fork from google pinyin on android
+ app-i18n/libgooglepinyin                       | 0.1.2-r1               |            | http://libgooglepinyin.googlecode.com/                                                  | A fork from google pinyin on android
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-i18n/lunar                                 | 2.2-r5                 |            | https://packages.debian.org/unstable/utils/lunar                                        | Chinese Lunar Calendar conversion utility
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -59,7 +59,7 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-i18n/sogoupinyin                           | 2.4.0.3469             |            | http://pinyin.sogou.com/linux/                                                          | Sogou Pinyin input method.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-i18n/zh-autoconvert                        | 0.3.16-r3              |            | http://packages.debian.org/stable/text/zh-autoconvert.html                              | Chinese HZ/GB/BIG5/UNI/UTF7/UTF8 encodings auto-converter
+ app-i18n/zh-autoconvert                        | 0.3.16-r3              |            | https://packages.debian.org/stable/source/zh-autoconvert                                | Chinese HZ/GB/BIG5/UNI/UTF7/UTF8 encodings auto-converter
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-misc/bcompare                              | 4.3.7.25118            |            | http://www.scootersoftware.com/                                                         | Beyond Compare -- Compare, sync, and merge files and folders
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -74,24 +74,17 @@
  app-misc/spark                                 | 1.0.1                  |            | http://zachholman.com/spark/                                                            | ▁▂▃▅▂▇ in your shell
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-mobilephone/scrcpy                         | 1.14                   |            | https://blog.rom1v.com/2018/03/introducing-scrcpy/                                      | Display and control your Android device
-                                                | 1.16                   |            |                                                                                         |
                                                 | 1.17                   |            |                                                                                         |
+                                                | 1.18                   |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-office/wps-office                          | 11.1.0.10161           |            | http://www.wps.cn/product/wpslinux/                                                     | WPS Office is an office productivity suite, Here is the Chinese version
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-pda/ipadcharge                             | 9999                   |            | https://github.com/mkorenkov/ipad_charge                                                | Enables USB charging for Apple devices.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-portage/portage-cdb                        | 0.2.1                  |            | http://gentoo-wiki.com/TIP_speed_up_portage_with_cdb                                    | increase portage's speed after syncing, and for calculating dependencies. This method uses a database, rather than a bunch of flat files to store its metadata.
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-shells/zsh-theme-powerlevel10k             | 1.15.0                 |            | https://github.com/romkatv/powerlevel10k                                                | Theme for Zsh that emphasizes speed, flexibility and out-of-the-box experience
-   app-shells/gitstatus                         | 1.5.1                  |  D, RD     | https://github.com/romkatv/gitstatus                                                    | Git status for Bash and Zsh prompt
+   app-shells/gitstatus                         | 1.5.2                  |  D, RD     | https://github.com/romkatv/gitstatus                                                    | Git status for Bash and Zsh prompt
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-text/groff-utf8                            | 0-r1                   |            | http://www.haible.de/bruno/packages-groff-utf8.html                                     | GNU groff wrapper allowing UTF-8 input
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-text/openyoudao                            | 9999                   |            | http://openyoudao.org                                                                   | openyoudao is a youdao client for linux.
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- app-text/reciteword-dicts                      | 0.8.2                  |            | http://reciteword.cosoft.org.cn/                                                        | Reciteword's dictionary.
-   app-text/reciteword                          | 0.8.5                  | RD         | http://reciteword.sourceforge.net/                                                      | Reciteword is a education software to help people to study English, reciting english words. It have very beautiful interface, make reciting word being a interesting things.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  app-text/srecite                               | 0.6.2                  |            | http://srecite.sourceforge.net                                                          | Smart Reciting
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -127,8 +120,6 @@
    dev-python/conda-package-handling            | 1.7.3                  |  D, RD     | https://github.com/conda/conda-package-handling                                         | Create and extract conda packages of various formats
    dev-python/pycosat                           | 0.6.3                  |  D, RD     | https://github.com/ContinuumIO/pycosat                                                  | Python bindings to picosat (a SAT solver)
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- dev-python/fuo-xiami                           | 0.2.4                  |            | https://github.com/feeluown/feeluown-xiami                                              | xiami music support for feeluown
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  dev-ruby/mruby                                 | 1.0.0                  |            | https://github.com/mruby/mruby                                                          | mruby is the lightweight implementation of the Ruby language complying to (part of) the ISO standard.
                                                 | 9999                   |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -139,8 +130,6 @@
  dev-util/elfembed                              | 0.3-r1                 |            | http://elfembed.sourceforge.net/index.php                                               | Resource Compiler for ELF binaries
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  dev-util/fernflower                            | 1                      |            | https://github.com/fesh0r/fernflower                                                    | Fernflower is the first actually working analytical decompiler for Java and probably for a high-level programming language in general
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- dev-util/global                                | 6.3.4                  |            | http://www.gnu.org/software/global/global.html                                          | GNU Global is a tag system to find the locations of a specified object in various sources
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  dev-util/jd-gui                                | 1.4.0                  |            | http://jd.benow.ca/                                                                     | A standalone graphical utility that displays Java source codes of .class file
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -159,7 +148,7 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  media-fonts/jf-openhuninn                      | 1.1                    |            | https://justfont.com/huninn/                                                            | An opensource Chinese font by justfont, based on Kosugi Maru and Varela Round
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- media-fonts/nerd-fonts                         | 2.1.0                  |            | https://www.nerdfonts.com/                                                              | Nerd Fonts is a project that patches developer targeted fonts with a high number of glyphs (icons).
+ media-fonts/nerd-fonts                         | 2.1.0                  |            | https://github.com/ryanoasis/nerd-fonts                                                 | Nerd Fonts is a project that patches developer targeted fonts with glyphs
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  media-fonts/taipei-sans-tc                     | 1.0                    |            | https://sites.google.com/view/jtfoundry/                                                | JT Foundry - Taipei Sans TC Beta font
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -185,13 +174,13 @@
  media-plugins/gimp-gap                         | 2.8.0                  |            | http://www.gimp.org/                                                                    | Gimp Animation Package
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  media-plugins/osdlyrics                        | 9999                   |            | https://github.com/osdlyrics/osdlyrics                                                  | Standalone lyrics fetcher/displayer (windowed and OSD mode).
-                                                | 20200403               |            |                                                                                         |
+                                                | 20200403-r1            |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- media-sound/feeluown                           | 3.7.7-r1               |            | https://github.com/feeluown/FeelUOwn                                                    | A user-friendly and hackable music player
+ media-sound/feeluown                           | 3.7.7-r2               |            | https://github.com/feeluown/FeelUOwn                                                    | A user-friendly and hackable music player
    dev-python/fuo-kuwo                          | 0.1.4                  |  D         | https://github.com/feeluown/feeluown-kuwo                                               | kuwo music support for feeluown
    dev-python/fuo-local                         | 0.2.1-r1               |  D         | https://github.com/feeluown/feeluown-local                                              | local music support for feeluown
    dev-python/fuo-netease                       | 0.6-r1                 |  D         | https://github.com/feeluown/feeluown-netease                                            | netease cloud music support for feeluown
-   dev-python/fuo-qqmusic                       | 0.3.2-r1               |  D         | https://github.com/feeluown/feeluown-xiami                                              | xiami music support for feeluown
+   dev-python/fuo-qqmusic                       | 0.3.2-r1               |  D         | https://github.com/feeluown/feeluown-qqmusic                                            | qq music support for feeluown
    dev-python/janus                             | 0.4.0-r1               |  D, RD     | https://github.com/aio-libs/janus                                                       | Implementation of the asyncio (PEP 3156) event-loop with Qt
    dev-python/qasync                            | 0.9.4-r1               |  D, RD     | https://github.com/CabbageDevelopment/qasync                                            | Implementation of the asyncio (PEP 3156) event-loop with Qt
    dev-python/tomlkit                           | 0.7.0-r1               |  D, RD     | https://github.com/sdispater/tomlkit                                                    | Style-preserving TOML library for Python
@@ -239,8 +228,6 @@
  net-misc/nomachine-enterprise-client           | 7.6.2.1                |            | https://www.nomachine.com                                                               | NoMachine Enterprise Client
                                                 | 7.6.2.4                |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- net-misc/omnitty                               | 0.3.0                  |            | http://omnitty.sourceforge.net/                                                         | ncurses-based ssh multiplexer for cluster administration
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-misc/pcmanx-gtk2                           | 1.3                    |            | https://github.com/pcman-bbs/pcmanx                                                     | PCMan is an easy-to-use telnet client mainly targets BBS users formerly writen by gtk2
                                                 | 9999                   |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -254,7 +241,7 @@
  net-p2p/n2n                                    | 2.6                    |            | http://www.ntop.org/n2n/                                                                | A Layer Two Peer-to-Peer VPN
                                                 | 2.8                    |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- net-p2p/qbittorrent-enhanced                   | 4.3.1.11               |            | https://github.com/c0re100/qBittorrent-Enhanced-Edition                                 | A bittorrent client powered by C++, Qt5 and the good libtorrent library (Enhanced Edition)
+ net-p2p/qbittorrent-enhanced                   | 4.3.1.11               |            | https://github.com/c0re100/qBittorrent-Enhanced-Edition                                 | qBittorrent Enhanced, based on qBittorrent
                                                 | 4.3.5.10               |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-print/epson-inkjet-printer_201207w         | 1.0.0                  |            | http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX                              | Epson printer driver (L110, L210, L300, L350, L355, L550, L555)
@@ -270,7 +257,7 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-proxy/qvplugin-command                     | 2.0.0                  |            | https://github.com/Qv2ray/QvPlugin-Command                                              | Plugin for Qv2ray to run any commands when something happens in Qv2ray
                                                 | 99999                  |            |                                                                                         |
-   net-proxy/qv2ray                             | 2.6.3-r1               |  D, RD     | https://qv2ray.github.io/                                                               | Qt GUI fontend of v2ray
+   net-proxy/qv2ray                             | 2.6.3-r2               |  D, RD     | https://qv2ray.github.io/                                                               | Qt GUI fontend of v2ray
                                                 | 99999                  |            |                                                                                         |
      net-proxy/v2ray                            | 4.38.3                 | RD         | https://github.com/v2fly/v2ray-core                                                     | A platform for building proxies to bypass network restrictions.
                                                 | 4.39.2                 |            |                                                                                         |
@@ -291,9 +278,6 @@
                                                 | 99999                  |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-proxy/shadowsocks                          | 9999                   |            | http://shadowsocks.org/                                                                 | A fast tunnel proxy that helps you bypass firewalls
-------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- net-proxy/shadowsocks-qt5                      | 3.0.1                  |            | https://github.com/shadowsocks/libQtShadowsocks                                         | Shadowsocks-Qt5 is a native and cross-platform shadowsocks GUI client with advanced features.
-   net-proxy/libQtShadowsocks                   | 2.1.0                  |  D         | https://github.com/shadowsocks/libQtShadowsocks                                         | A lightweight and ultra-fast shadowsocks library written in C++/Qt
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  net-proxy/shadowvpn                            | 9999                   |            | http://shadowvpn.org/                                                                   | A fast, safe VPN based on libsodium
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -326,8 +310,12 @@
  sys-libs/libixp                                | 9999                   |            | http://libs.suckless.org/                                                               | Standalone client/server 9P library
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  virtual/linux-sources                          | 3-r6                   |            |                                                                                         | Virtual for Linux kernel sources
-   sys-kernel/xanmod-cacule-hybrid              | 5.12.10                | RD         | https://xanmod.org/                                                                     | Xanmod-Cacule patchset for main kernel tree
-   sys-kernel/xanmod-hybrid                     | 5.12.10                | RD         | https://xanmod.org/                                                                     | Xanmod patchset for main kernel tree
+   sys-kernel/linux-tkg-sources                 | 5.12.11                | RD         | https://github.com/Frogging-Family/linux-tkg                                            | Linux-TkG, cjktty, uksm patchset for main kernel tree
+                                                | 5.12.11-r1             |            |                                                                                         |
+                                                | 5.12.12                |            |                                                                                         |
+   sys-kernel/xanmod-hybrid                     | 5.12.10-r2             | RD         | https://github.com/HougeLangley/customkernel                                            | Xanmod, Xanmod-CaCule, cjktty, uksm patchset for main kernel tree
+                                                | 5.12.11                |            |                                                                                         |
+                                                | 5.12.12                |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  www-servers/darkhttpd                          | 1.13                   |            | http://unix4lyfe.org/darkhttpd/                                                         | A small, static webserver
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
@@ -335,7 +323,7 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  x11-libs/libvdpau-va-gl                        | 9999                   |            | https://github.com/i-rinat/libvdpau-va-gl/                                              | VDPAU driver with VA-API/OpenGL backend.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- x11-misc/9menu                                 | 1.8                    |            | http://packages.debian.org/source/sid/9menu                                             | Create X menus from the shell
+ x11-misc/9menu                                 | 1.8                    |            | https://packages.debian.org/source/sid/9menu                                            | Create X menus from the shell
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  x11-misc/fqterm                                | 0.9.10.1               |            | https://github.com/mytbk/fqterm                                                         | a modern terminal emulator for Linux
                                                 | 9999                   |            |                                                                                         |
@@ -358,8 +346,8 @@
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  x11-themes/lxice                               | 0.1.0                  |            | http://lxde.sf.net/                                                                     | LXDE theme for IceWM
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
- x11-themes/smplayer-themes-nonfree             | 0.1.0                  |            | http://smplayer.sourceforge.net/                                                        | Icon themes for smplayer
-                                                | 0.1.1                  |            |                                                                                         |
+ x11-themes/smplayer-themes-nonfree             | 0.1.0-r1               |            | http://smplayer.sourceforge.net/                                                        | Icon themes for smplayer
+                                                | 0.1.1-r1               |            |                                                                                         |
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
  x11-wm/9wm                                     | 1.1                    |            | http://unauthorised.org/dhog/9wm.html                                                   | A window manager emulation of the Plan 9 window manager 8-1/2.
 ------------------------------------------------|------------------------|------------|-----------------------------------------------------------------------------------------|--------------------
