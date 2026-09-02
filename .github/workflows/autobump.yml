@@ -1,7 +1,9 @@
 # autobump: try the mechanical version bumps that nvchecker filed as issues.
 #
 # Design:
-# - Runs 2h after nvchecker's daily cron, so bumpbot has filed the issues.
+# - Runs 30 minutes after each nvchecker run, so bumpbot has filed the issues.
+# - The plan job reads cached state once, resolves the queue and passes disjoint shards
+#   to workers. Workers never claim or share state; collect merges their deltas afterward.
 # - v1 uses NO model anywhere (AUTOBUMP_JUDGE is unset): whatever is not
 #   mechanically safe gets an evidence comment on its issue and stops.
 #   The judge hook exists in autobump-sweep.py for later, where semantic
@@ -24,8 +26,13 @@
 name: autobump
 
 on:
-  # daily run, 2h after nvchecker's cron so bumpbot has filed the issues. A human still merges
-  # every PR; not-opted-in packages are skipped and non-mechanical bumps only comment.
+  # Chained to nvchecker rather than a clock: scheduled runs here start hours after their
+  # cron, so a fixed offset cannot keep autobump behind the issues it reads. A human still
+  # merges every PR; not-opted-in packages are skipped and non-mechanical bumps only comment.
+  workflow_run:
+    workflows: [nvchecker]
+    types: [completed]
+  # backstop: if nvchecker stops running, the queue would go quiet with nothing saying so
   schedule:
     - cron: '0 11 * * *'
   workflow_dispatch:
@@ -35,9 +42,17 @@ on:
         required: false
         default: ''
       limit:
-        description: 'max issues per run'
+        description: 'max issues per run (0 = the whole queue)'
         required: false
-        default: '30'
+        default: '0'
+      rebuild_env:
+        description: 'rebuild the worker environment image'
+        type: boolean
+        default: false
+      env_date:
+        description: 'run on an earlier environment image (YYYYMMDD, empty = today)'
+        required: false
+        default: ''
 
 concurrency:
   group: autobump
@@ -49,72 +64,133 @@ permissions:
   issues: write
 
 jobs:
-  sweep:
+  wait:
     if: github.repository == 'gentoo-zh/overlay' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    steps:
+    - name: stop if nvchecker failed
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'success'
+      run: |
+        echo "nvchecker concluded ${{ github.event.workflow_run.conclusion }}; nothing to bump" >&2
+        exit 1
+
+    # nvchecker files the issues inside its own run, so they exist by the time this fires.
+    # The wait is for the search index the queue is read through, which can trail a new
+    # issue by a few minutes.
+    - name: wait for the issues to settle
+      if: github.event_name == 'workflow_run'
+      run: sleep 300
+
+  # After plan, so a run with an empty queue builds nothing; the 13 minutes this adds
+  # ahead of the workers are nothing against a run that bumps for hours.
+  env:
+    needs: plan
+    if: ${{ fromJSON(needs.plan.outputs.plan).matrix.include[0] != null }}
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/autobump-env.yml
+    with:
+      force: ${{ github.event_name == 'workflow_dispatch' && inputs.rebuild_env }}
+      date: ${{ inputs.env_date || '' }}
+
+  # plan and collect need python3 and gh, both on the runner image; only the bump workers
+  # need portage, and a container start costs a 3.5 GB pull.
+  plan:
+    needs: wait
+    runs-on: ubuntu-latest
+    outputs:
+      plan: ${{ steps.plan.outputs.plan }}
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v7
+
+    - name: mint app token
+      id: app-token
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ secrets.APP_CLIENT_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        owner: gentoo-zh
+        repositories: overlay
+
+    - name: restore state
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ github.workspace }}/.autobump-state/autobump
+        key: autobump-state-${{ github.run_id }}
+        restore-keys: autobump-state-
+
+    - name: plan
+      id: plan
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        XDG_STATE_HOME: ${{ github.workspace }}/.autobump-state
+        ISSUES: ${{ github.event.inputs.issues }}
+        LIMIT: ${{ github.event.inputs.limit || 0 }}
+        SHARDS: '8'
+      run: |
+        # validate before use: ISSUES is space-separated issue numbers, LIMIT and SHARDS are ints.
+        case "$ISSUES" in *[!0-9\ ]*) echo "issues must be numbers: $ISSUES" >&2; exit 1;; esac
+        case "$LIMIT" in ''|*[!0-9]*) echo "limit must be a number: $LIMIT" >&2; exit 1;; esac
+        # $ISSUES intentionally unquoted so it word-splits into positional args (validated above).
+        plan=$(python3 scripts/autobump-sweep.py $ISSUES --limit "$LIMIT" --plan "$SHARDS")
+        echo "plan=$plan" >> "$GITHUB_OUTPUT"
+
+  bump:
+    needs: [env, plan]
+    # listed in full because a job-level block replaces the workflow defaults; packages:read
+    # is what pulls the environment image
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      packages: read
+    if: ${{ fromJSON(needs.plan.outputs.plan).matrix.include[0] != null }}
+    runs-on: ubuntu-latest
+    # Eight shards run at once: a worker's fixed cost is the image pull plus a 37s webrsync,
+    # and it is paid in parallel, so it costs runner minutes rather than wall clock. What the
+    # queue actually waits on is one slow package holding its shard, and that only gets
+    # shorter with more shards.
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJSON(needs.plan.outputs.plan).matrix }}
     # A heavy from-source dep (e.g. net-libs/nodejs for the pnpm/npm family) can take ~1h+; give the
     # per-op ceiling (AUTOBUMP_OP_TIMEOUT below) room for it and keep this job ceiling above one such
     # build plus a tail of light packages, so a heavy build finishes instead of being cut off mid-run.
     timeout-minutes: 360
     container:
-      image: gentoo/stage3:amd64-desktop-openrc
+      image: ${{ needs.env.outputs.image }}
+      # the image is private until someone makes it public; do not depend on which it is
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
       options: --privileged
 
     steps:
     - name: sync gentoo main tree
       run: emerge-webrsync --no-pgp-verify
 
-    - name: setup portage
+    # MAKEOPTS and CPU_FLAGS_X86 are the only config the image cannot carry: they describe
+    # the runner. Without the flags, REQUIRED_USE=cpu_flags_x86_avx2 never resolves and the
+    # bump reports a build failure. Derive them from the runner, do not pin a list.
+    - name: tune portage for this runner
       run: |
-        # expand $(nproc) HERE, not in make.conf: a literal $(...) there trips portage's
-        # config parser ("$: bad substitution") and breaks the whole config. FEATURES/
-        # MAKEOPTS keep their ${...} so portage appends to the stage3 defaults.
-        {
-          echo 'FEATURES="${FEATURES} getbinpkg"'
-          echo "MAKEOPTS=\"\${MAKEOPTS} -j$(nproc)\""
-          echo 'PORTAGE_ELOG_CLASSES="qa warn error"'
-          echo 'PORTAGE_ELOG_SYSTEM="save"'
-          # accept all licenses: several opted-in packages are non-free (-bin blobs,
-          # CC-BY-NC, vendor EULAs). Without this emerge masks them and the bump churns
-          # its retries then defers with a misleading "build failure" comment, forever.
-          echo 'ACCEPT_LICENSE="*"'
-        } >> /etc/portage/make.conf
-        # Align heavy-dep USE to the official binhost's binpkgs so getbinpkg actually USES them,
-        # instead of rejecting a USE mismatch and rebuilding from source (which would blow the
-        # op-timeout): the binhost builds webkit-gtk +keyring and qtwebengine +bindist, but the
-        # desktop profile defaults them off. Keep this list in sync with emerge-on-pr's; extend
-        # it if a heavy dep still shows [ebuild] in a real bump.
-        mkdir -p /etc/portage/package.use
-        cat > /etc/portage/package.use/ci-binhost << 'EOF'
-        dev-qt/qtwebengine bindist
-        net-libs/webkit-gtk keyring
-        EOF
-        getuto
-        install -dm775 -o root -g portage /var/cache/distfiles
+        echo "MAKEOPTS=\"\${MAKEOPTS} -j$(nproc)\"" >> /etc/portage/make.conf
+        echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/autobump-cpuflags
 
-    - name: install tooling
-      run: |
-        # Xvfb (minimal xorg-server) powers the advisory GUI launch probe: a GUI
-        # bump is launched headless to see it does not crash on start. Remove the
-        # xorg-server line + package.use if the build cost is not worth it - the
-        # probe then just skips and the PR still flags GUI apps for a manual check.
-        mkdir -p /etc/portage/package.use
-        echo "x11-base/xorg-server xvfb minimal -xorg" > /etc/portage/package.use/autobump-xvfb
-        # pkgdev/pkgcheck are dev-util/ now (pkgcore tools moved category); dev-lang/ruby
-        # runs the engine. --getbinpkg keeps the tool install fast.
-        emerge --quiet --getbinpkg --autounmask=y --autounmask-write=y --autounmask-continue=y \
-          dev-lang/ruby dev-vcs/git dev-util/pkgdev dev-util/pkgcheck app-portage/portage-utils \
-          app-portage/iwdevtools dev-util/github-cli app-misc/jq net-misc/curl \
-          app-portage/cpuid2cpuflags x11-base/xorg-server
-        # curl: the engine's finalize stage re-checks pkgcheck DeadUrl hits with curl;
-        # stage3 ships only wget, so without it that probe crashes and defers the bump.
-        # qlist (portage-utils) drives the --version smoke; qa-vdb (iwdevtools)
-        # checks RDEPEND vs linked libs on source packages; Xvfb the GUI probe
-
-    # stage3 sets no CPU_FLAGS_X86, so REQUIRED_USE=cpu_flags_x86_avx2 never resolves
-    # and the bump reports a build failure. Derive from the runner, do not pin a list.
-    - name: set CPU flags from the runner
-      run: echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/autobump-cpuflags
+    # binpkgs the engine's build tests produced (FEATURES=buildpkg), so a heavy dep is built
+    # once and unpacked afterwards. Every shard restores; only one saves, because a cache
+    # entry holds the whole directory and eight near-copies a day would evict everything
+    # else in the 10 GB the repo gets.
+    - name: restore dependency binpkgs
+      uses: actions/cache/restore@v6
+      with:
+        path: /var/cache/binpkgs
+        key: autobump-binpkgs-${{ github.run_id }}
+        restore-keys: autobump-binpkgs-
 
     - name: checkout
       uses: actions/checkout@v7
@@ -167,14 +243,7 @@ jobs:
         git config user.name  "gentoo-zh-bot"
         git config user.email "bot@gentoozh.org"
 
-    - name: restore state
-      uses: actions/cache@v6
-      with:
-        path: /root/.local/state/autobump
-        key: autobump-state-${{ github.run_id }}
-        restore-keys: autobump-state-
-
-    - name: sweep
+    - name: bump shard
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
         # sync master from origin: after deploy, origin IS gentoo-zh/overlay, so this pulls
@@ -190,17 +259,70 @@ jobs:
         # allow a generous per-op ceiling so a heavy from-source build (net-libs/nodejs ~1h)
         # finishes instead of timing out and deferring; keep in step with timeout-minutes above.
         AUTOBUMP_OP_TIMEOUT: '7200'
-        # pin the state dir to match the cache path above: in a container job HOME is
-        # /github/home (not /root), so the default $HOME/.local/state would diverge from
-        # the cached /root/.local/state and done.list would never persist across runs.
-        XDG_STATE_HOME: /root/.local/state
-        # dispatch inputs via env, NOT inlined into the command below: this job holds a
-        # write-scoped App token, so a crafted input must not be able to inject shell.
-        ISSUES: ${{ github.event.inputs.issues }}
-        LIMIT: ${{ github.event.inputs.limit || 30 }}
+        # inside the container: ${{ runner.temp }} is a host path the container lacks
+        AUTOBUMP_EVIDENCE_DIR: /tmp/autobump-evidence
+        SHARD: ${{ toJSON(fromJSON(needs.plan.outputs.plan).shards[matrix.shard]) }}
+        SHARD_ID: ${{ matrix.shard }}
+        LIMIT: ${{ github.event.inputs.limit || 0 }}
+      run: python3 scripts/autobump-sweep.py --worker "$SHARD" --delta "autobump-delta-$SHARD_ID.json" --limit "$LIMIT" --pr --comment
+
+    - name: save dependency binpkgs
+      if: always() && matrix.shard == 0
+      uses: actions/cache/save@v6
+      with:
+        path: /var/cache/binpkgs
+        key: autobump-binpkgs-${{ github.run_id }}
+
+    - name: upload shard delta
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: autobump-delta-${{ matrix.shard }}
+        path: autobump-delta-${{ matrix.shard }}.json
+
+    - name: upload escalation evidence
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: autobump-evidence-${{ matrix.shard }}
+        path: /tmp/autobump-evidence
+        if-no-files-found: ignore
+
+  collect:
+    needs: [plan, bump]
+    if: ${{ always() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v7
+
+    - name: restore state
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ github.workspace }}/.autobump-state/autobump
+        key: autobump-state-${{ github.run_id }}
+        restore-keys: autobump-state-
+
+    - name: download shard deltas
+      if: ${{ needs.bump.result != 'skipped' && needs.bump.result != 'cancelled' }}
+      uses: actions/download-artifact@v8
+      with:
+        pattern: autobump-delta-*
+        path: autobump-deltas
+        merge-multiple: true
+
+    - name: collect
+      env:
+        XDG_STATE_HOME: ${{ github.workspace }}/.autobump-state
+        PLAN: ${{ needs.plan.outputs.plan }}
       run: |
-        # validate before use: ISSUES is space-separated issue numbers, LIMIT an int.
-        case "$ISSUES" in *[!0-9\ ]*) echo "issues must be numbers: $ISSUES" >&2; exit 1;; esac
-        case "$LIMIT" in ''|*[!0-9]*) echo "limit must be a number: $LIMIT" >&2; exit 1;; esac
-        # $ISSUES intentionally unquoted so it word-splits into positional args (validated above).
-        python3 scripts/autobump-sweep.py $ISSUES --limit "$LIMIT" --pr --comment
+        shopt -s nullglob
+        python3 scripts/autobump-sweep.py --collect "$PLAN" autobump-deltas/*.json
+
+    - name: save state
+      if: success()
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ github.workspace }}/.autobump-state/autobump
+        key: autobump-state-${{ github.run_id }}

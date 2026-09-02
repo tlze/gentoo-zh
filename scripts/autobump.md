@@ -18,7 +18,8 @@ Step 2 has three outcomes:
 
 * **mechanical** — version change only and emerge passed, so it opens a PR.
 * **escalate** — major version jump, changed dependencies, or a `files/` patch to
-  re-verify. It comments the evidence on the issue and opens no PR.
+  re-verify. It comments the evidence on the issue, uploads the engine's evidence
+  directory as a run artifact, and opens no PR.
 * **defer** — a transient network, mirror or upstream-file problem, a per-version
   vendor bundle that is not generated yet, or a heavy dependency with no binpkg on
   the binhost that would exceed the CI timeout. Retried
@@ -94,7 +95,8 @@ bumped.
 
 ## Running it
 
-It runs daily at 11:00 UTC, two hours after nvchecker's cron, once the issues are filed.
+It runs 5 minutes after each nvchecker run finishes, once the issues are filed, and daily
+at 11:00 UTC as a backstop.
 
 ### Web
 
@@ -115,12 +117,17 @@ gh workflow run autobump.yml --repo gentoo-zh/overlay -f limit=20
 
 Both take the same inputs; `issues` accepts digits and spaces only.
 
-`limit` defaults to 30 and caps how many packages the engine actually attempts. Packages
-that are not opted in, or already done, are skipped without spending the budget.
+The workers run in an image built once a day (`autobump-env`). `rebuild_env` forces a fresh
+one; `env_date` runs on an earlier day's image, of which the last three are kept.
 
-A run lasts at most 360 minutes and GitHub cancels it there; the script itself does not
-stop early. Each package has a separate two-hour ceiling: `ebuild install`, `emerge` and
-`ebuild unpack` are deferred on timeout and retried next run.
+`limit` caps engine attempts across the whole run; it defaults to 0, which runs the whole
+queue. The planner resolves the queue against the cached state and assigns those attempts to
+disjoint shards; skips are free.
+
+A run has three phases: plan, at most eight bump workers in parallel, and collect. Each worker
+lasts at most 360 minutes and GitHub cancels it there. Each package has a separate two-hour
+ceiling: `ebuild install`, `emerge` and `ebuild unpack` are deferred on timeout and retried next
+run.
 
 Locally, clone the engine into the overlay root, install `dev-lang/ruby`, then run:
 

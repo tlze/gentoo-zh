@@ -14,7 +14,7 @@
 第 2 步有三种结果：
 
 * **可机械处理**：只改版本号且 emerge 通过，创建 PR。
-* **需人工处理**：大版本跳变、依赖有变化，或 `files/` 里的 patch 要重新验证。只在 issue 上记录证据，不创建 PR。
+* **需人工处理**：大版本跳变、依赖有变化，或 `files/` 里的 patch 要重新验证。只在 issue 上记录证据，完整证据目录作为 run artifact 上传，不创建 PR。
 * **暂缓**：网络、镜像或上游文件暂时不可用，per-version vendor bundle 还没生成，或者某个过重的依赖在 binhost 上没有 binpkg、从源码编译会超出 CI 限时。下次自动重试，重试若干次仍不行才交给人。
 
 ## 哪些包可以开启
@@ -74,7 +74,7 @@ autobump_my_build_url = "https://example.org/releases/${PV}"
 
 ## 运行
 
-每天 11:00 UTC 自动执行一次，比 nvchecker 的 cron 晚两小时。
+每次 nvchecker 跑完 5 分钟后执行；另有每天 11:00 UTC 一次作为兜底。
 
 ### 网页
 
@@ -95,9 +95,11 @@ gh workflow run autobump.yml --repo gentoo-zh/overlay -f limit=20
 
 两种方式的输入相同，`issues` 只接受数字和空格。
 
-`limit` 默认 30，限制引擎实际尝试的包数。未开启和已处理过的包会跳过，跳过不占额度。
+worker 跑在每天构建一次的镜像里（`autobump-env`）。`rebuild_env` 强制重建，`env_date` 指定用更早一天的镜像，保留最近三个。
 
-一次运行最多 360 分钟，到时由 GitHub 取消，脚本自身不会提前结束。单个包另有两小时上限，`ebuild install`、`emerge` 和 `ebuild unpack` 超时后标记暂缓，下次重试。
+`limit` 限制整次运行的引擎尝试总数，默认 0 表示整个队列都跑。规划阶段按缓存状态解析队列，把这些尝试分到互不重叠的 shard，跳过不占额度。
+
+一次运行分三段：规划、最多八个并行的 bump worker、合并。每个 worker 最多 360 分钟，到时由 GitHub 取消。单个包另有两小时上限，`ebuild install`、`emerge` 和 `ebuild unpack` 超时后标记暂缓，下次重试。
 
 本地运行先把引擎 clone 到 overlay 根目录、安装 `dev-lang/ruby`：
 
