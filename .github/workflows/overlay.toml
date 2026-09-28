@@ -569,6 +569,13 @@ use_latest_release = true
 prefix = "v"
 github_account = "gouwazi"
 
+["app-misc/fast-resume"]
+source = "github"
+github = "angristan/fast-resume"
+use_latest_release = true
+prefix = "v"
+github_account = "liangyongxiang"
+
 ["app-misc/go-yq-bin"]
 source = "github"
 github = "mikefarah/yq"
