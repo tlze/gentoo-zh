@@ -810,6 +810,13 @@ use_latest_release = true
 prefix = "v"
 autobump = true
 
+["app-text/stirling-pdf-bin"]
+source = "github"
+github = "Stirling-Tools/Stirling-PDF"
+use_latest_release = true
+prefix = "v"
+github_account = "AmberisMyShiba"
+
 ["app-text/xreader"]
 source = "github"
 github = "linuxmint/xreader"

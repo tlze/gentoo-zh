@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<name>AmberisMyShiba</name>
+		<email>tefiszx@gmail.com</email>
+	</maintainer>
+	<longdescription lang="en">Stirling-PDF is a locally hosted, web-based PDF manipulation tool. This is the official Tauri desktop application built by Stirling PDF Inc, bundling the Stirling-PDF server with an embedded Java runtime.
+	</longdescription>
+	<longdescription lang="zh">Stirling-PDF 是一款本地托管的基于 Web 的 PDF 处理工具。本包为 Stirling PDF Inc 官方构建的 Tauri 桌面应用，内置 Stirling-PDF 服务端与嵌入式 Java 运行时。
+	</longdescription>
+	<upstream>
+		<remote-id type="github">Stirling-Tools/Stirling-PDF</remote-id>
+	</upstream>
+</pkgmetadata>
