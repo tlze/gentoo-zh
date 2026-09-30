@@ -1924,6 +1924,7 @@ source = "github"
 github = "KRTirtho/spotube"
 use_latest_release = true
 prefix = "v"
+autobump = true
 github_account = ["AmberisMyShiba", "gouwazi"]
 
 ["media-sound/termusic"]
