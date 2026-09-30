@@ -816,6 +816,7 @@ source = "github"
 github = "Stirling-Tools/Stirling-PDF"
 use_latest_release = true
 prefix = "v"
+autobump = true
 github_account = "AmberisMyShiba"
 
 ["app-text/xreader"]
